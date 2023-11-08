@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """This class is the template for all authentication system to implement.
 """
 from flask import request
