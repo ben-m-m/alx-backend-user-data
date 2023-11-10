@@ -5,6 +5,7 @@ session module
 from api.v1.auth.auth import Auth
 from uuid import uuid4
 from models.user import User
+from flask import request
 
 
 class SessionAuth(Auth):
@@ -30,12 +31,17 @@ class SessionAuth(Auth):
         user_id = self.user_id_by_session_id.get(session_id)
         return user_id
 
-    def current_user(self, request=None):
+    def current_user(self, request=None) -> User:
         """Returns a user based on a cookie value."""
-        cookie_value = self.session_cookie(request)
-        if cookie_value:
-            user_id = self.user_id_by_session_id(cookie_value)
-            if user_id:
-                user = User.get(user_id)
-                return user
-            return
+        user_id = self.user_id_for_session_id(self.session_cookie(request))
+        return User.get(user_id)
+
+    def destroy_session(self, request=None):
+        """Deletes the user session / logout"""
+        session_id = self.session_cookie(request)
+        user_id = self.user_id_for_session_id(session_id)
+        if (request is None or session_id is None) or user_id is None:
+            return False
+        if session_id in self.user_id_by_session_id:
+            del self.user_id_by_session_id[session_id]
+        return True
