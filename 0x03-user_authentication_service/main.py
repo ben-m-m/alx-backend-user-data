@@ -3,6 +3,7 @@
 Main file
 """
 from auth import Auth
+from app import app, AUTH
 
 email = 'bob@bob.com'
 password = 'MyPwdOfBob'
