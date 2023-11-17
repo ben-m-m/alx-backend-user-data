@@ -50,4 +50,3 @@ class DB:
             print("Error adding new user: {e}")
             self._session.rollback()
             return None
-    
