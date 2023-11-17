@@ -3,7 +3,7 @@
  Flask app that has a single GET route ("/")
  and use flask.jsonify to return a JSON payload
 """
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, abort
 from auth import Auth
 
 
@@ -31,6 +31,26 @@ def register_user() -> str:
                         "user created"}), 200
     except ValueError:
         return jsonify({"message": "email already registered"}), 400
+
+
+@app.route('/sessions', methods=['POST'], strict_slashes=False)
+def login() -> str:
+    """
+    POST /sessions
+    Returns
+        json payload
+    """
+    try:
+        email = request.form.get('email')
+        password = request.form.get('password')
+        if AUTH.valid_login(email, password):
+            session_id = AUTH.create_session(email)
+            response = jsonify({"email": email, "message": "logged in"})
+            response.set_cookie('session_id', session_id)
+        else:
+            abort(401)
+    except FileNotFoundError:
+        abort(401)
 
 
 if __name__ == "__main__":
