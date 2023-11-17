@@ -65,3 +65,28 @@ class DB:
             raise e
         except InvalidRequestError as e:
             raise e
+
+    def update_user(self, user_id: int, **kwargs) -> None:
+        """_summary_
+
+        Args:
+            user_id (int): _description_
+
+        Raises:
+            ValueError: _description_
+            ValueError: _description_
+        Returns:
+            None: _description_
+        """
+        user = self.find_user_by(id=user_id)
+        if not user:
+            raise ValueError
+
+        valid_keys = ['email', 'hashed_password']
+        for key, value in kwargs.items():
+            if key not in valid_keys:
+                raise ValueError
+            setattr(user, key, value)
+
+        self._session.commit()
+        pass
