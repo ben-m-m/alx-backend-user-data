@@ -133,7 +133,8 @@ class Auth:
         try:
             user = self._db.find_user_by(email=email)
             if user:
-                reset_token = user._generate_uuid()
+                reset_token = _generate_uuid()
+                user.reset_token = reset_token
                 self._db.session.commit()
                 return reset_token
             else:
