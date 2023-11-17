@@ -130,14 +130,11 @@ class Auth:
         Returns:
             str: Reset password token.
         """
-        try:
-            user = self._db.find_user_by(email=email)
-            if user:
-                reset_token = _generate_uuid()
-                user.reset_token = reset_token
-                self._db.session.commit()
-                return reset_token
-            else:
-                raise ValueError
-        except NoResultFound:
+        user = self._db.find_user_by(email=email)
+        if user:
+            reset_token = _generate_uuid()
+            user.reset_token = reset_token
+            self._db.session.commit()
+            return reset_token
+        else:
             raise ValueError
